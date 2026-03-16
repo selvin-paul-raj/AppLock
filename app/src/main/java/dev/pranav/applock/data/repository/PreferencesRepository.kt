@@ -3,6 +3,8 @@ package dev.pranav.applock.data.repository
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import dev.pranav.applock.data.model.PasswordType
+import java.security.MessageDigest
 
 /**
  * Repository for managing application preferences and settings.
@@ -27,6 +29,47 @@ class PreferencesRepository(context: Context) {
     fun validatePassword(inputPassword: String): Boolean {
         val storedPassword = getPassword()
         return storedPassword != null && inputPassword == storedPassword
+    }
+
+    /**
+     * Checks whether [inputPassword] matches the admin password, the guest (decoy) password,
+     * or neither, and returns the corresponding [PasswordType].
+     *
+     * The admin password is compared in plain text (existing behaviour).
+     * The guest password is stored as a SHA-256 hash and compared accordingly.
+     */
+    fun checkPasswordType(inputPassword: String): PasswordType {
+        val storedAdmin = getPassword()
+        if (storedAdmin != null && inputPassword == storedAdmin) return PasswordType.ADMIN
+
+        val storedGuestHash = appLockPrefs.getString(KEY_GUEST_PASSWORD_HASH, null)
+        if (storedGuestHash != null && sha256(inputPassword) == storedGuestHash) {
+            return PasswordType.GUEST
+        }
+
+        return PasswordType.INVALID
+    }
+
+    /** Store the guest password as a SHA-256 hash. */
+    fun setGuestPassword(password: String) {
+        appLockPrefs.edit { putString(KEY_GUEST_PASSWORD_HASH, sha256(password)) }
+    }
+
+    /** Returns true if a guest password has been configured. */
+    fun hasGuestPassword(): Boolean {
+        return appLockPrefs.contains(KEY_GUEST_PASSWORD_HASH)
+    }
+
+    /** Remove the guest password. */
+    fun clearGuestPassword() {
+        appLockPrefs.edit { remove(KEY_GUEST_PASSWORD_HASH) }
+    }
+
+    /** SHA-256 hash helper. Returns a lowercase hex string. */
+    private fun sha256(input: String): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+        return digest.digest(input.toByteArray(Charsets.UTF_8))
+            .joinToString("") { "%02x".format(it) }
     }
 
     fun setPattern(pattern: String) {
@@ -160,6 +203,7 @@ class PreferencesRepository(context: Context) {
 
         private const val KEY_PASSWORD = "password"
         private const val KEY_PATTERN = "pattern"
+        private const val KEY_GUEST_PASSWORD_HASH = "guest_password_hash"
         private const val KEY_BIOMETRIC_AUTH_ENABLED = "use_biometric_auth"
         private const val KEY_DISABLE_HAPTICS = "disable_haptics"
         private const val KEY_USE_MAX_BRIGHTNESS = "use_max_brightness"

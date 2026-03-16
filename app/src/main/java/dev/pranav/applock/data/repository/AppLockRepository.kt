@@ -2,6 +2,7 @@ package dev.pranav.applock.data.repository
 
 import android.content.Context
 import dev.pranav.applock.data.manager.BackendServiceManager
+import dev.pranav.applock.data.model.PasswordType
 
 /**
  * Main repository that coordinates between different specialized repositories and managers.
@@ -44,6 +45,17 @@ class AppLockRepository(private val context: Context) {
     fun setPassword(password: String) = preferencesRepository.setPassword(password)
     fun validatePassword(inputPassword: String): Boolean =
         preferencesRepository.validatePassword(inputPassword)
+
+    /**
+     * Determines whether [inputPassword] is the admin password, the guest/decoy password,
+     * or neither. Used by the lock screen to decide whether to start intruder monitoring.
+     */
+    fun checkPasswordType(inputPassword: String): PasswordType =
+        preferencesRepository.checkPasswordType(inputPassword)
+
+    fun setGuestPassword(password: String) = preferencesRepository.setGuestPassword(password)
+    fun hasGuestPassword(): Boolean = preferencesRepository.hasGuestPassword()
+    fun clearGuestPassword() = preferencesRepository.clearGuestPassword()
 
     fun getPattern(): String? = preferencesRepository.getPattern()
     fun setPattern(pattern: String) = preferencesRepository.setPattern(pattern)

@@ -48,8 +48,10 @@ import dev.pranav.applock.R
 import dev.pranav.applock.core.ui.shapes
 import dev.pranav.applock.core.utils.appLockRepository
 import dev.pranav.applock.core.utils.vibrate
+import dev.pranav.applock.data.model.PasswordType
 import dev.pranav.applock.data.repository.AppLockRepository
 import dev.pranav.applock.data.repository.PreferencesRepository
+import dev.pranav.applock.features.intruder.MediaProjectionCaptureActivity
 import dev.pranav.applock.services.AppLockManager
 import dev.pranav.applock.ui.icons.Backspace
 import dev.pranav.applock.ui.icons.Fingerprint
@@ -156,11 +158,16 @@ class PasswordOverlayActivity : FragmentActivity() {
 
     private fun setupUI() {
         val onPinAttemptCallback = { pin: String ->
-            val isValid = appLockRepository.validatePassword(pin)
+            // Check whether this is the admin password or the guest/decoy password
+            val passwordType = appLockRepository.checkPasswordType(pin)
+            val isValid = passwordType != PasswordType.INVALID
             if (isValid) {
                 lockedPackageNameFromIntent?.let { pkgName ->
+                    if (passwordType == PasswordType.GUEST) {
+                        // Guest password: unlock normally but trigger silent intruder monitoring
+                        startIntruderMonitoring()
+                    }
                     AppLockManager.unlockApp(pkgName)
-
                     finishAfterTransition()
                 }
             }
@@ -212,6 +219,21 @@ class PasswordOverlayActivity : FragmentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Starts the [MediaProjectionCaptureActivity] which will request the screen recording
+     * permission and then launch [IntruderMonitoringService] with the captured projection data.
+     * The app name is forwarded so the log entry is correctly labelled.
+     */
+    private fun startIntruderMonitoring() {
+        try {
+            val intent = MediaProjectionCaptureActivity.buildIntent(this, appName.ifEmpty { lockedPackageNameFromIntent ?: "Unknown" })
+            startActivity(intent)
+            Log.i(TAG, "Intruder monitoring started for app: $appName")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start intruder monitoring", e)
         }
     }
 
