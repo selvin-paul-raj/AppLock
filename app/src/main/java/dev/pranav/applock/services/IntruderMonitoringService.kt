@@ -31,10 +31,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -109,7 +107,8 @@ class IntruderMonitoringService : Service() {
                 screenPath = startScreenRecording(intruderDir, timestamp, projectionResultCode, projectionData)
             }
 
-            // Update the log with captured paths
+            // Update the log with captured paths (videoPath is reserved for a future
+            // camera video capture feature and is not yet implemented)
             db.intruderDao().update(
                 IntruderLog(
                     id = logId,
@@ -172,13 +171,13 @@ class IntruderMonitoringService : Service() {
                                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                                     cameraProvider.unbindAll()
                                     Log.d(TAG, "Photo saved: ${photoFile.absolutePath}")
-                                    cont.resume(photoFile.absolutePath) {}
+                                    if (cont.isActive) cont.resume(photoFile.absolutePath) {}
                                 }
 
                                 override fun onError(exception: ImageCaptureException) {
                                     cameraProvider.unbindAll()
                                     Log.e(TAG, "Photo capture failed", exception)
-                                    cont.resume(null) {}
+                                    if (cont.isActive) cont.resume(null) {}
                                 }
                             }
                         )

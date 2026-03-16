@@ -456,7 +456,7 @@ fun SettingsScreen(
                         ActionSettingItem(
                             icon = Icons.Default.Lock,
                             title = "Intruder History",
-                            subtitle = "View captured photos and recordings of unauthorised access attempts",
+                            subtitle = "View captured photos and recordings of unauthorized access attempts",
                             onClick = { navController.navigate(Screen.IntruderHistory.route) }
                         )
                     )
