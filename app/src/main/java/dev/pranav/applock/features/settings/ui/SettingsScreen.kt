@@ -439,6 +439,30 @@ fun SettingsScreen(
                 )
             }
 
+            // Intruder Monitoring section
+            item {
+                SectionTitle(text = "Intruder Monitoring")
+            }
+
+            item {
+                SettingsGroup(
+                    items = listOf(
+                        ActionSettingItem(
+                            icon = Icons.Outlined.Security,
+                            title = "Set Guest Password",
+                            subtitle = "Configure a decoy password that triggers silent intruder monitoring",
+                            onClick = { navController.navigate(Screen.SetGuestPassword.route) }
+                        ),
+                        ActionSettingItem(
+                            icon = Icons.Default.Lock,
+                            title = "Intruder History",
+                            subtitle = "View captured photos and recordings of unauthorised access attempts",
+                            onClick = { navController.navigate(Screen.IntruderHistory.route) }
+                        )
+                    )
+                )
+            }
+
             item {
                 BackendSelectionCard(
                     appLockRepository = appLockRepository,

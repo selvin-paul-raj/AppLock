@@ -10,4 +10,8 @@ sealed class Screen(val route: String) {
     object Settings : Screen("settings")
     object TriggerExclusions : Screen("trigger_exclusions")
     object AntiUninstall: Screen("anti_uninstall")
+    /** Screen that shows recorded intruder attempts (Dual Password Intruder Monitoring). */
+    object IntruderHistory : Screen("intruder_history")
+    /** Screen for setting up the guest (decoy) password. */
+    object SetGuestPassword : Screen("set_guest_password")
 }

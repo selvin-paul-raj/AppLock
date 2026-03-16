@@ -26,6 +26,12 @@
         tools:ignore="ForegroundServicesPolicy" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
+    <!-- Intruder Monitoring: camera access for front-camera photo capture -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Intruder Monitoring: audio recording alongside screen capture -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Intruder Monitoring: MediaProjection screen recording (API 34+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
 
     <uses-permission android:name="android.permission.SET_ACTIVITY_WATCHER" />
 
@@ -125,6 +131,21 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+
+        <!-- Intruder Monitoring: foreground service for camera/screen capture -->
+        <service
+            android:name=".services.IntruderMonitoringService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="camera|mediaProjection" />
+
+        <!-- Intruder Monitoring: transparent activity for MediaProjection permission -->
+        <activity
+            android:name=".features.intruder.MediaProjectionCaptureActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

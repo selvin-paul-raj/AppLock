@@ -20,6 +20,8 @@ import dev.pranav.applock.data.repository.PreferencesRepository
 import dev.pranav.applock.features.antiuninstall.ui.AntiUninstallScreen
 import dev.pranav.applock.features.appintro.ui.AppIntroScreen
 import dev.pranav.applock.features.applist.ui.MainScreen
+import dev.pranav.applock.features.intruder.ui.IntruderHistoryScreen
+import dev.pranav.applock.features.intruder.ui.SetGuestPasswordScreen
 import dev.pranav.applock.features.lockscreen.ui.PasswordOverlayScreen
 import dev.pranav.applock.features.lockscreen.ui.PatternLockScreen
 import dev.pranav.applock.features.setpassword.ui.PatternSetPasswordScreen
@@ -113,6 +115,15 @@ fun AppNavHost(navController: NavHostController, startDestination: String) {
 
         composable(Screen.AntiUninstall.route) {
             AntiUninstallScreen(navController)
+        }
+
+        // Intruder Monitoring System screens
+        composable(Screen.IntruderHistory.route) {
+            IntruderHistoryScreen(navController)
+        }
+
+        composable(Screen.SetGuestPassword.route) {
+            SetGuestPasswordScreen(navController)
         }
     }
 }

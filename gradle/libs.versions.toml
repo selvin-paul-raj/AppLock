@@ -7,6 +7,7 @@ shizuku = "13.1.5"
 biometric = "1.4.0-alpha02"
 fragmentKtx = "1.8.9"
 kotlin = "2.3.10"
+ksp = "2.3.10-1.0.31"
 coreKtx = "1.17.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.12.4"
@@ -14,6 +15,8 @@ composeBom = "2026.02.00"
 material3 = "1.5.0-alpha14"
 materialIconsCore = "1.7.8"
 navigationCompose = "2.9.7"
+room = "2.7.1"
+camerax = "1.4.1"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityCompose" }
@@ -39,9 +42,17 @@ hiddenapibypass = { module = "org.lsposed.hiddenapibypass:hiddenapibypass", vers
 refine-runtime = { module = "dev.rikka.tools.refine:runtime", version.ref = "refine" }
 shizuku-provider = { module = "dev.rikka.shizuku:provider", version.ref = "shizuku" }
 shizuku-api = { module = "dev.rikka.shizuku:api", version.ref = "shizuku" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+camerax-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
+camerax-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
+camerax-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
+camerax-video = { module = "androidx.camera:camera-video", version.ref = "camerax" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

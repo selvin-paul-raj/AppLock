@@ -7,4 +7,9 @@
     <files-path
         name="audit_logs"
         path="." />
+
+    <!-- Intruder monitoring: captured photos and screen recordings -->
+    <external-files-path
+        name="intruder_files"
+        path="intruders/" />
 </paths>
